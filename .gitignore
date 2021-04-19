@@ -1,0 +1,5 @@
+config.json
+java/.project
+java/.classpath
+*.class
+*/.settings/*
