@@ -1,5 +1,6 @@
 config.json
-java/.project
-java/.classpath
+.project
+.classpath
 *.class
-*/.settings/*
+.settings
+node_modules

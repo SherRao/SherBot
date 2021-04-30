@@ -1,10 +1,12 @@
 const fs = require('fs');
 const config = require('./config.json');
 
-const discordAdmin = require('discord.js');
-const discord = new discordAdmin.Client();
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const logger = require('js-logger');
 
 let commands = [];  
+let events = [];
 
 /**
  * 
@@ -14,30 +16,35 @@ let commands = [];
  * 
  */
 function main() {
-    discord.once('ready', () => {
+    client.once('ready', () => {
+        logger.useDefaults();
+
         setPresence();
-        initCommands();
+        registerCommands();
+        registerEvents();
         handleCommands();
 
         console.log("Bot loaded!");
     });
 
-    discord.login(config.token);
+    client.login(config.token);
 }
 
 /**
  * 
- * Sets the initial Discord bot user presence text.
+ * Sets the initial Discord bot user presence text. 
+ * This should be changed to your liking.
  * 
  * @author Nausher Rao
  *
  */
 function setPresence() {
-    discord.user.setPresence({
+    client.user.setPresence({
         status: "dnd",
         activity: {
             name: "Loading bot...", 
-            type: "WATCHING"
+            type: "WATCHING",
+            url: null
         },     
 
     type: "WATCHING" });
@@ -51,16 +58,45 @@ function setPresence() {
  * @author Nausher Rao
  * 
  */
-function initCommands() {
+function registerCommands() {
     console.log("Loading commands!");
-    for(const file of fs.readdirSync('./commands').filter(file => file.endsWith('.js') && file != 'template.js') ) {
-        const command = require(`./commands/${file}`);
+    let files = fs.readdirSync('./commands')
+                    .filter(file => file.endsWith('.js') && file != 'example.js')
 
-        discord.api.applications(discord.user.id).guilds(config.server).commands.post(command);
+    for(const file of files) {
+        const command = require(`./commands/${file}`);
         commands.push(command);
+        client.api.applications(client.user.id).guilds(config.server).commands.post(command);
         
         console.log(`Loaded command from file: ./commands/${file}`);
     }
+}
+
+/**
+ * 
+ * Load all event handler files from the "events" folder, and registers them 
+ * with the Discord event manager.
+ * 
+ * @author Nausher Rao
+ * 
+ */
+function registerEvents() {
+    console.log("Loading event handlers!");
+    let files = fs.readdirSync('./events')
+                    .filter(file => file.endsWith('.js') && file != 'example.js');
+
+    for(const file of files) {
+        const event = require(`./events/${file}`);
+        events.push(event);
+
+        if(event.once)
+            client.once(event.name, client.execute(client));
+
+        else 
+            client.on(event.name, event.execute(client))
+        
+        console.log(`Loaded event handler from file: ./events/${file}`);
+    }  
 }
 
 /**
@@ -72,21 +108,12 @@ function initCommands() {
  * 
  */
 function handleCommands() {
-    console.log("Registering command interaction create listener!");
-    discord.ws.on('INTERACTION_CREATE', async interaction => {
+    console.log("Registering commands with the interaction create web socket!");
+    client.ws.on('INTERACTION_CREATE', async interaction => {
         const input = interaction.data.name.toLowerCase();
-        
-        const user = null//;
-        const userPermissions = interaction.;
-        const userRoles = interaciton;
-
         for(const command of commands) {
             if(command.data.name == input) {
-                let permissionsRoles = command.permission_roles;
-                let permissions = command.permission;
-                if(permissions != null && permissions.includes())
-
-                console.log("Processing command: " + command);
+                console.log("Processing command: " + command.data.name);
                 command.execute(client, interaction);
                 break;
 
