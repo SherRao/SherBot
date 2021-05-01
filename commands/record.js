@@ -53,7 +53,7 @@ module.exports = {
         ]
     },
 
-    execute: (client, interaction) => {
+    execute: (client, logger, interaction) => {
         let member = interaction.member;
         console.log(member.voice);
         console.log(member);
@@ -64,7 +64,6 @@ module.exports = {
             sendMessage(client, interaction, "The selected user is not in a voice channel!");
 
     }
-
 }
 
 function sendMessage(client, interaction, message) {

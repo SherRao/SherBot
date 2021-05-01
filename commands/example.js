@@ -48,7 +48,7 @@ module.exports = {
     },
 
     // Code executed when this slash command is used by a valid user.
-    execute: (client, interaction) => {
+    execute: (client, logger, interaction) => {
         client.api.interactions(interaction.id, interaction.token).callback.post({
             data: { type: 4, data: {content: "Hello world!"} }
 

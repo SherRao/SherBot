@@ -7,6 +7,7 @@ const logger = require('js-logger');
 
 let commands = [];  
 let events = [];
+let tasks = [];
 
 /**
  * 
@@ -17,17 +18,30 @@ let events = [];
  */
 function main() {
     client.once('ready', () => {
-        logger.useDefaults();
 
+        initLogger();
         setPresence();
         registerCommands();
         registerEvents();
+        registerTasks();
         handleCommands();
 
-        console.log("Bot loaded!");
+        logger.info("Bot loaded!");
     });
 
     client.login(config.token);
+}
+
+
+function initLogger() {
+    logger.useDefaults({
+        defaultLevel: logger.DEBUG,
+        
+        formatter: function (messages, context) {
+            messages.unshift(`[${new Date().toUTCString()}] [${context.level.name}]: `)
+       
+        }
+    });
 }
 
 /**
@@ -39,6 +53,7 @@ function main() {
  *
  */
 function setPresence() {
+    logger.info("Setting presence!");
     client.user.setPresence({
         status: "dnd",
         activity: {
@@ -59,16 +74,16 @@ function setPresence() {
  * 
  */
 function registerCommands() {
-    console.log("Loading commands!");
+    logger.info("Loading commands!");
     let files = fs.readdirSync('./commands')
                     .filter(file => file.endsWith('.js') && file != 'example.js')
-
+    
     for(const file of files) {
         const command = require(`./commands/${file}`);
         commands.push(command);
         client.api.applications(client.user.id).guilds(config.server).commands.post(command);
         
-        console.log(`Loaded command from file: ./commands/${file}`);
+        logger.info(`Loaded command from file: commands/${file}`);
     }
 }
 
@@ -81,21 +96,43 @@ function registerCommands() {
  * 
  */
 function registerEvents() {
-    console.log("Loading event handlers!");
+    logger.info("Loading event handlers!");
     let files = fs.readdirSync('./events')
                     .filter(file => file.endsWith('.js') && file != 'example.js');
 
     for(const file of files) {
         const event = require(`./events/${file}`);
         events.push(event);
-
+        
         if(event.once)
-            client.once(event.name, client.execute(client));
+		    client.once(event.name, (...args) => event.execute(client, logger, ...args));
 
         else 
-            client.on(event.name, event.execute(client))
+            client.on(event.name, (...args) => event.execute(client, logger, ...args));
         
-        console.log(`Loaded event handler from file: ./events/${file}`);
+        logger.info(`Loaded event handler from file: events/${file}`);
+    }  
+}
+
+/**
+ * 
+ * Load all repeating task files from the "tasks" folder, and registers them 
+ * with the JS Window DOM.
+ * 
+ * @author Nausher Rao
+ * 
+ */
+ function registerTasks() {
+    logger.info("Loading tasks!");
+    let files = fs.readdirSync('./tasks')
+                    .filter(file => file.endsWith('.js') && file != 'example.js');
+
+    for(const file of files) {
+        const task = require(`./tasks/${file}`);
+        tasks.push(task);
+        setInterval(task.execute, task.interval, client, logger);
+
+        logger.info(`Loaded task from file: tasks/${file}`);
     }  
 }
 
@@ -108,13 +145,13 @@ function registerEvents() {
  * 
  */
 function handleCommands() {
-    console.log("Registering commands with the interaction create web socket!");
+    logger.info("Registering commands with the interaction create web socket!");
     client.ws.on('INTERACTION_CREATE', async interaction => {
         const input = interaction.data.name.toLowerCase();
         for(const command of commands) {
             if(command.data.name == input) {
-                console.log("Processing command: " + command.data.name);
-                command.execute(client, interaction);
+                logger.info("Processing command: " + command.data.name);
+                command.execute(client, logger, interaction);
                 break;
 
             } else
