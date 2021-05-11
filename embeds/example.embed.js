@@ -1,3 +1,13 @@
+/**
+ * 
+ * File that contains an embed to use within different places
+ * in the code. 
+ * 
+ * Reference -> https://discordjs.guide/popular-topics/embeds.html#embed-preview
+ * 
+ * @author Nausher Rao
+ * 
+ */
 module.exports = {
 
     exampleEmbed = {

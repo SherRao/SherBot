@@ -9,7 +9,7 @@ module.exports = {
     interval: 1000 * 60,
 
     execute: () =>{
-        console.log(`The time is currently: ${new Date().toLocaleString()} for ${discord.user.tag}!`);
+        console.log(`The time is currently: ${new Date().toLocaleString()}! for ${discord.user.tag}`);
 
     }
 

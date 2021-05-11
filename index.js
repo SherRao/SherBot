@@ -2,12 +2,26 @@ const fs = require('fs');
 const config = require('./config.json');
 
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const discord = new Discord.Client();
 const logger = require('js-logger');
 
 let commands = [];  
 let events = [];
 let tasks = [];
+
+/**
+ * 
+ * Allows any other file that has access to index to use other files.
+ * 
+ * @author Nausher Rao
+ * 
+ */
+module.exports = {
+    "discord": discord,
+    "logger": logger,
+
+}
+
 
 /**
  * 
@@ -17,7 +31,7 @@ let tasks = [];
  * 
  */
 function main() {
-    client.once('ready', () => {
+    discord.once('ready', () => {
 
         initLogger();
         setPresence();
@@ -29,10 +43,18 @@ function main() {
         logger.info("Bot loaded!");
     });
 
-    client.login(config.token);
+    discord.login(config.token);
 }
 
 
+/**
+ * 
+ * Sets up the logger to look pretty. 
+ * This should be changed to your liking.
+ * 
+ * @author Nausher Rao
+ * 
+ */
 function initLogger() {
     logger.useDefaults({
         defaultLevel: logger.DEBUG,
@@ -54,7 +76,7 @@ function initLogger() {
  */
 function setPresence() {
     logger.info("Setting presence!");
-    client.user.setPresence({
+    discord.user.setPresence({
         status: "dnd",
         activity: {
             name: "Loading bot...", 
@@ -81,7 +103,7 @@ function registerCommands() {
     for(const file of files) {
         const command = require(`./commands/${file}`);
         commands.push(command);
-        client.api.applications(client.user.id).guilds(config.server).commands.post(command);
+        discord.api.applications(discord.user.id).guilds(config.server).commands.post(command);
         
         logger.info(`Loaded command from file: commands/${file}`);
     }
@@ -105,10 +127,10 @@ function registerEvents() {
         events.push(event);
         
         if(event.once)
-		    client.once(event.name, (...args) => event.execute(client, logger, ...args));
+		    discord.once(event.name, (...args) => event.execute(...args));
 
         else 
-            client.on(event.name, (...args) => event.execute(client, logger, ...args));
+            discord.on(event.name, (...args) => event.execute(...args));
         
         logger.info(`Loaded event handler from file: events/${file}`);
     }  
@@ -130,7 +152,7 @@ function registerEvents() {
     for(const file of files) {
         const task = require(`./tasks/${file}`);
         tasks.push(task);
-        setInterval(task.execute, task.interval, client, logger);
+        setInterval(task.execute, task.interval);
 
         logger.info(`Loaded task from file: tasks/${file}`);
     }  
@@ -146,12 +168,12 @@ function registerEvents() {
  */
 function handleCommands() {
     logger.info("Registering commands with the interaction create web socket!");
-    client.ws.on('INTERACTION_CREATE', async interaction => {
+    discord.ws.on('INTERACTION_CREATE', async interaction => {
         const input = interaction.data.name.toLowerCase();
         for(const command of commands) {
             if(command.data.name == input) {
-                logger.info("Processing command: " + command.data.name);
-                command.execute(client, logger, interaction);
+                logger.debug("Processing command: " + command.data.name);
+                command.execute(interaction);
                 break;
 
             } else
