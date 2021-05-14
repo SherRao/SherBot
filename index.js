@@ -98,7 +98,7 @@ function setPresence() {
 function registerCommands() {
     logger.info("Loading commands!");
     let files = fs.readdirSync('./commands')
-                    .filter(file => file.endsWith('.js') && file != 'example.js')
+                    .filter(file => file.endsWith('.js') && file != 'example.command.js')
     
     for(const file of files) {
         const command = require(`./commands/${file}`);
@@ -120,7 +120,7 @@ function registerCommands() {
 function registerEvents() {
     logger.info("Loading event handlers!");
     let files = fs.readdirSync('./events')
-                    .filter(file => file.endsWith('.js') && file != 'example.js');
+                    .filter(file => file.endsWith('.js') && file != 'example.event.js');
 
     for(const file of files) {
         const event = require(`./events/${file}`);
@@ -147,7 +147,7 @@ function registerEvents() {
  function registerTasks() {
     logger.info("Loading tasks!");
     let files = fs.readdirSync('./tasks')
-                    .filter(file => file.endsWith('.js') && file != 'example.js');
+                    .filter(file => file.endsWith('.js') && file != 'example.task.js');
 
     for(const file of files) {
         const task = require(`./tasks/${file}`);
