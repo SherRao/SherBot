@@ -1,6 +1,6 @@
-<h1 align="center">DiscordBot</h1>
+<h1 align="center">LaurierCSBot</h1>
 <blockquote align="center">
-  <em>LCSBot</em> is the official Discord Bot for the Laurier Computing Society Discord server - powered by SherBot
+  <em>LaurierCSBot</em> is the official Discord Bot for the Laurier Computing Society Discord server - powered by SherBot
 </blockquote>
 
 <h2>
