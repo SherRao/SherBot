@@ -1,6 +1,6 @@
-<h1 align="center">LaurierCSBot</h1>
+<h1 align="center">SherBot</h1>
 <blockquote align="center">
-  <em>LaurierCSBot</em> is the official Discord Bot for the Laurier Computing Society Discord server - powered by SherBot
+  <em>SherBot</em> A lightweight Discord bot that can be used to create any bot! It has all the boilerplate code done for you, and is fully modular! You can add commands, events, and timed tasks - all fully modular!
 </blockquote>
 
 <h2>
