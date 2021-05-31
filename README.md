@@ -1,6 +1,4 @@
 <h1 align="center">SherBot</h1>
-  <a href=""><img src="public/logo.png" width="512"/></a>
-  <br/>
 <blockquote align="center">
   <em>SherBot</em> A lightweight Discord bot that can be used to create any bot! It has all the boilerplate code done for you, and is fully modular! You can add commands, events, and timed tasks - all fully modular!
 </blockquote>
@@ -15,6 +13,8 @@ Requirements
 </ul>
 
 <h2>Usage</h2>
+Don't use the example files given - any command named example.*.js won't be loaded by the bot! Copy the example files and rename them to use!.
+
 <h3>
 Commands
 </h3>
