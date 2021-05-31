@@ -33,4 +33,5 @@ This folder stores functions. Any files that end with ".js" in the tasks folder 
 <h3>
 Embeds
 </h3>
+
 This folder is used to store embeds in their own files to allow cleaner code. These can be imported in files and used as neccessary.
