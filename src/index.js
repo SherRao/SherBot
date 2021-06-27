@@ -1,11 +1,11 @@
 const fs = require('fs');
-const config = require('./config.json');
+const config = require('../config.json');
 
 const Discord = require('discord.js');
 const discord = new Discord.Client();
 const logger = require('js-logger');
 
-let commands = [];  
+let commands = [];
 let events = [];
 let tasks = [];
 
@@ -58,10 +58,10 @@ function main() {
 function initLogger() {
     logger.useDefaults({
         defaultLevel: logger.DEBUG,
-        
+
         formatter: function (messages, context) {
             messages.unshift(`[${new Date().toUTCString()}] [${context.level.name}]: `)
-       
+
         }
     });
 }
@@ -79,12 +79,13 @@ function setPresence() {
     discord.user.setPresence({
         status: "dnd",
         activity: {
-            name: "Loading bot...", 
+            name: "Loading bot...",
             type: "WATCHING",
             url: null
-        },     
+        },
 
-    type: "WATCHING" });
+        type: "WATCHING"
+    });
 }
 
 /**
@@ -98,13 +99,13 @@ function setPresence() {
 function registerCommands() {
     logger.info("Loading commands!");
     let files = fs.readdirSync('./commands')
-                    .filter(file => file.endsWith('.js') && file != 'example.command.js')
-    
-    for(const file of files) {
+        .filter(file => file.endsWith('.js') && file != 'example.command.js')
+
+    for (const file of files) {
         const command = require(`./commands/${file}`);
         commands.push(command);
         discord.api.applications(discord.user.id).guilds(config.server).commands.post(command);
-        
+
         logger.info(`Loaded command from file: commands/${file}`);
     }
 }
@@ -120,20 +121,20 @@ function registerCommands() {
 function registerEvents() {
     logger.info("Loading event handlers!");
     let files = fs.readdirSync('./events')
-                    .filter(file => file.endsWith('.js') && file != 'example.event.js');
+        .filter(file => file.endsWith('.js') && file != 'example.event.js');
 
-    for(const file of files) {
+    for (const file of files) {
         const event = require(`./events/${file}`);
         events.push(event);
-        
-        if(event.once)
-		    discord.once(event.name, (...args) => event.execute(...args));
 
-        else 
+        if (event.once)
+            discord.once(event.name, (...args) => event.execute(...args));
+
+        else
             discord.on(event.name, (...args) => event.execute(...args));
-        
+
         logger.info(`Loaded event handler from file: events/${file}`);
-    }  
+    }
 }
 
 /**
@@ -144,18 +145,18 @@ function registerEvents() {
  * @author Nausher Rao
  * 
  */
- function registerTasks() {
+function registerTasks() {
     logger.info("Loading tasks!");
     let files = fs.readdirSync('./tasks')
-                    .filter(file => file.endsWith('.js') && file != 'example.task.js');
+        .filter(file => file.endsWith('.js') && file != 'example.task.js');
 
-    for(const file of files) {
+    for (const file of files) {
         const task = require(`./tasks/${file}`);
         tasks.push(task);
         setInterval(task.execute, task.interval);
 
         logger.info(`Loaded task from file: tasks/${file}`);
-    }  
+    }
 }
 
 /**
@@ -170,15 +171,15 @@ function handleCommands() {
     logger.info("Registering commands with the interaction create web socket!");
     discord.ws.on('INTERACTION_CREATE', async interaction => {
         const input = interaction.data.name.toLowerCase();
-        for(const command of commands) {
-            if(command.data.name == input) {
+        for (const command of commands) {
+            if (command.data.name == input) {
                 logger.debug("Processing command: " + command.data.name);
                 command.execute(interaction);
                 break;
 
             } else
                 continue;
-    
+
         }
     });
 }
