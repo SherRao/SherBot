@@ -4,4 +4,3 @@ config.json
 *.class
 .settings
 node_modules
-.eslintrc.json
