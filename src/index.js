@@ -5,34 +5,28 @@ const Discord = require("discord.js");
 const discord = new Discord.Client();
 const logger = require("js-logger");
 
+/** Stores all the command files that are registered by the program. */
 let commands = [];
+
+/** Stores all the event files that are registered by the program. */
 let events = [];
+
+/** Stores all the task files that are registered by the program. */
 let tasks = [];
 
-/**
- * 
- * Allows any other file that has access to index to use other files.
- * 
- * @author Nausher Rao
- * 
- */
-module.exports = {
-    "discord": discord,
-    "logger": logger,
-
-};
-
+/** Stores all the job files that are registered by the program. */
+let jobs = [];
 
 /**
  * 
  * Main function that handles all calls to other parts of the bot.
  * 
+ * This function does not need to be edited.
  * @author Nausher Rao
  * 
  */
 function main() {
     discord.once("ready", () => {
-
         initLogger();
         setPresence();
         registerCommands();
@@ -50,8 +44,8 @@ function main() {
 /**
  * 
  * Sets up the logger to look pretty. 
- * This should be changed to your liking.
  * 
+ * This function should be changed to your liking.
  * @author Nausher Rao
  * 
  */
@@ -69,8 +63,8 @@ function initLogger() {
 /**
  * 
  * Sets the initial Discord bot user presence text. 
- * This should be changed to your liking.
  * 
+ * This function should be changed to your liking.
  * @author Nausher Rao
  *
  */
@@ -93,6 +87,8 @@ function setPresence() {
  * Load all command files from the "commands" folder, and POST them to the Discord 
  * command endpoint for the specific server.
  * 
+ * This function does not need to be edited.
+ * @private
  * @author Nausher Rao
  * 
  */
@@ -103,9 +99,11 @@ function registerCommands() {
 
     for (const file of files) {
         const command = require(`./commands/${file}`);
+        if (!command.enabled)
+            continue;
+
         commands.push(command);
         discord.api.applications(discord.user.id).guilds(config.server).commands.post(command);
-
         logger.info(`Loaded command from file: commands/${file}`);
     }
 }
@@ -115,6 +113,8 @@ function registerCommands() {
  * Load all event handler files from the "events" folder, and registers them 
  * with the Discord event manager.
  * 
+ * This function does not need to be edited.
+ * @private
  * @author Nausher Rao
  * 
  */
@@ -125,14 +125,15 @@ function registerEvents() {
 
     for (const file of files) {
         const event = require(`./events/${file}`);
-        events.push(event);
+        if (!event.enabled)
+            continue;
 
+        events.push(event);
         if (event.once)
             discord.once(event.name, (...args) => event.execute(...args));
 
         else
             discord.on(event.name, (...args) => event.execute(...args));
-
         logger.info(`Loaded event handler from file: events/${file}`);
     }
 }
@@ -142,6 +143,8 @@ function registerEvents() {
  * Load all repeating task files from the "tasks" folder, and registers them 
  * with the JS Window DOM.
  * 
+ * This function does not need to be edited.
+ * @private
  * @author Nausher Rao
  * 
  */
@@ -152,9 +155,11 @@ function registerTasks() {
 
     for (const file of files) {
         const task = require(`./tasks/${file}`);
+        if (!task.enabled)
+            continue;
+
         tasks.push(task);
         setInterval(task.execute, task.interval);
-
         logger.info(`Loaded task from file: tasks/${file}`);
     }
 }
@@ -164,6 +169,8 @@ function registerTasks() {
  * Code registered directly with the web socket to execute code 
  * when a slash command ("interaction") is recorded. 
  * 
+ * This function does not need to be edited.
+ * @private
  * @author Nausher Rao
  * 
  */
@@ -183,5 +190,13 @@ function handleCommands() {
         }
     });
 }
+
+/**
+ * 
+ * Allows any other file that has access to index to use other files.
+ * @author Nausher Rao
+ * 
+ */
+module.exports = { discord: discord, logger: logger };
 
 main();

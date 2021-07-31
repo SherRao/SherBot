@@ -3,13 +3,13 @@
  * File that contains an embed to use within different places
  * in the code. 
  * 
- * Reference -> https://discordjs.guide/popular-topics/embeds.html#embed-preview
  * Generator -> https://leovoel.github.io/embed-visualizer/
  *  
+ * @see https://discordjs.guide/popular-topics/embeds.html#embed-preview
  * @author Nausher Rao
  * 
  */
-module.exports = {
+const embed = {
     "content": "this `supports` __a__ **subset** *of* ~~markdown~~ 😃 ```js\nfunction foo(bar) {\n  console.log(bar);\n}\n\nfoo(1);```",
     "embed": {
         "title": "title ~~(did you know you can have markdown here too?)~~",
@@ -58,3 +58,5 @@ module.exports = {
         ]
     }
 };
+
+module.exports = { embed };
