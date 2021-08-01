@@ -1,6 +1,7 @@
-config.json
+config.js
 .project
 .classpath
 *.class
 .settings
 node_modules
+src/config.comments.json

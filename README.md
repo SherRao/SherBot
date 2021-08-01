@@ -18,7 +18,7 @@ Usage
 </h2>
 Don't use the example files given - any command named example.*.js won't be loaded by the bot! Copy the example files and rename them to use.
 
-Also make sure to rename "config.template.json" to "config.json" - this is where your token goes, as well as other data you want to use!
+Also make sure to rename "config.template.json" to "config.js" - this is where your token goes, as well as other data you want to use!
 
 <h3>
 Commands

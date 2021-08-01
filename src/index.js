@@ -1,8 +1,18 @@
 const fs = require("fs");
-const config = require("./config.json");
+const config = require("./config");
 
-const Discord = require("discord.js");
-const discord = new Discord.Client();
+const Discord = require("discord.js-light");
+const discord = new Discord.Client({
+
+    cacheGuilds: true,
+    cacheChannels: true,
+    cacheOverwrites: true,
+    cacheRoles: true,
+    cacheEmojis: false,
+    cachePresences: true,
+
+});
+
 const logger = require("js-logger");
 
 /** Stores all the command files that are registered by the program. */
@@ -73,12 +83,12 @@ function setPresence() {
     discord.user.setPresence({
         status: "dnd",
         activity: {
-            name: "Loading bot...",
-            type: "WATCHING",
-            url: null
+            name: "www.ccubed.dev",
+            type: "STREAMING",
+            url: "https://www.twitch.tv/ccubed_dev"
         },
 
-        type: "WATCHING"
+        type: "STREAMING"
     });
 }
 
@@ -186,7 +196,6 @@ function handleCommands() {
 
             } else
                 continue;
-
         }
     });
 }
