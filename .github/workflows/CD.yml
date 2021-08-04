@@ -8,16 +8,16 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-      environment: deployment
-      steps:
-        - uses: actions/checkout@v2
-        - name: Make envfile
-          uses: SpicyPizza/create-envfile@v1
-          with:
-            ENVKEY_TOKEN: ${{ secrets.TOKEN }}
+    environment: deployment
+    steps:
+      - uses: actions/checkout@v2
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          ENVKEY_TOKEN: ${{ secrets.TOKEN }}
 
-        - uses: akhileshns/heroku-deploy@v3.7.8
-            with:
-              heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-              heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-              heroku_email: ${{ secrets.HEROKU_APP_EMAIL }}
+      - uses: akhileshns/heroku-deploy@v3.7.8
+          with:
+            heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+            heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+            heroku_email: ${{ secrets.HEROKU_APP_EMAIL }}
