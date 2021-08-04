@@ -14,7 +14,7 @@ const embed = {
     },
 
     "thumbnail": {
-        "url": "https://raw.githubusercontent.com/ccubed-dev/DiscordBot/main/icon.png"
+        "url": "https://raw.githubusercontent.com/ccubed-dev/DiscordBot/main/resources/icon.png"
     },
 
     "fields": [

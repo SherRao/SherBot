@@ -34,4 +34,28 @@ function sendEmbed(embed, interaction) {
     });
 }
 
-module.exports = { sendMessage, sendEmbed };
+/**
+ * 
+ * Lets you write a one-liner to resolve a Promise and 
+ * catch any errors thrown.
+ * 
+ * @example const [result, error] = await resolve(promise);
+ * if(error) console.log("An error was thrown!", error); 
+ * else console.log("The result of the promise is:", result);
+ * 
+ * @param {Promise} promise The promise to wait for.
+ * @returns {Error?} The error if one was thrown. 
+ * @returns  {Promise?} The promise if one was resolved.
+ * 
+ * @author Nausher Rao
+ * 
+ */
+async function resolve(promise) {
+    try {
+        let result = await promise;
+        return [result, null];
+
+    } catch (err) { return [err, null]; }
+}
+
+module.exports = { sendMessage, sendEmbed, resolve };
