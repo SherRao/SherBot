@@ -16,7 +16,9 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "cd src && node index.js"
+        "start": "cd src && node index.js",
+        "lint": "eslint .",
+        "lint-fix": "eslint --fix ."
     },
     "repository": {
         "type": "git",
