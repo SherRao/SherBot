@@ -12,8 +12,8 @@ jobs:
         with:
           persist-credentials: false
 
-    - name: Install modules
-      run: npm install
+      - name: Install modules
+        run: npm install
 
-    - name: Run ESLint
-      run: eslint . --ext .js
+      - name: Run ESLint
+        run: eslint . --ext .js
