@@ -11,6 +11,9 @@ const logEmbed = require("../embeds/userLog.embed");
  * 
  */
 async function execute(oldMessage, newMessage) {
+    if (!newMessage.member)
+        return;
+
     if (newMessage.member.user.id == discord.user.id)
         return;
 
