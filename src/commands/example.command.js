@@ -73,4 +73,4 @@ const data = {
     ],
 };
 
-module.exports = { execute: execute, data: data, enabled: true };
+module.exports = { data: data, execute: execute, enabled: true };

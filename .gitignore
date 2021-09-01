@@ -1,6 +1,8 @@
-config.json
 .project
 .classpath
 *.class
 .settings
 node_modules
+src/config.comments.json
+src/.env
+.idea

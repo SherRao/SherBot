@@ -1,8 +1,19 @@
+require("dotenv").config();
 const fs = require("fs");
-const config = require("./config.json");
+const config = require("./config");
 
-const Discord = require("discord.js");
-const discord = new Discord.Client();
+const Discord = require("discord.js-light");
+const discord = new Discord.Client({
+
+    cacheGuilds: true,
+    cacheChannels: true,
+    cacheOverwrites: true,
+    cacheRoles: true,
+    cacheEmojis: false,
+    cachePresences: true,
+
+});
+
 const logger = require("js-logger");
 
 /** Stores all the command files that are registered by the program. */
@@ -18,12 +29,12 @@ let tasks = [];
 let jobs = [];
 
 /**
- * 
+ *
  * Main function that handles all calls to other parts of the bot.
- * 
+ *
  * This function does not need to be edited.
  * @author Nausher Rao
- * 
+ *
  */
 function main() {
     discord.once("ready", () => {
@@ -37,17 +48,17 @@ function main() {
         logger.info("Bot loaded!");
     });
 
-    discord.login(config.token);
+    discord.login(process.env.TOKEN);
 }
 
 
 /**
- * 
- * Sets up the logger to look pretty. 
- * 
+ *
+ * Sets up the logger to look pretty.
+ *
  * This function should be changed to your liking.
  * @author Nausher Rao
- * 
+ *
  */
 function initLogger() {
     logger.useDefaults({
@@ -61,9 +72,9 @@ function initLogger() {
 }
 
 /**
- * 
- * Sets the initial Discord bot user presence text. 
- * 
+ *
+ * Sets the initial Discord bot user presence text.
+ *
  * This function should be changed to your liking.
  * @author Nausher Rao
  *
@@ -73,24 +84,24 @@ function setPresence() {
     discord.user.setPresence({
         status: "dnd",
         activity: {
-            name: "Loading bot...",
-            type: "WATCHING",
-            url: null
+            name: "www.ccubed.dev",
+            type: "STREAMING",
+            url: "https://www.twitch.tv/ccubed_dev"
         },
 
-        type: "WATCHING"
+        type: "STREAMING"
     });
 }
 
 /**
- * 
- * Load all command files from the "commands" folder, and POST them to the Discord 
+ *
+ * Load all command files from the "commands" folder, and POST them to the Discord
  * command endpoint for the specific server.
- * 
+ *
  * This function does not need to be edited.
  * @private
  * @author Nausher Rao
- * 
+ *
  */
 function registerCommands() {
     logger.info("Loading commands!");
@@ -109,14 +120,14 @@ function registerCommands() {
 }
 
 /**
- * 
- * Load all event handler files from the "events" folder, and registers them 
+ *
+ * Load all event handler files from the "events" folder, and registers them
  * with the Discord event manager.
- * 
+ *
  * This function does not need to be edited.
  * @private
  * @author Nausher Rao
- * 
+ *
  */
 function registerEvents() {
     logger.info("Loading event handlers!");
@@ -139,14 +150,14 @@ function registerEvents() {
 }
 
 /**
- * 
- * Load all repeating task files from the "tasks" folder, and registers them 
+ *
+ * Load all repeating task files from the "tasks" folder, and registers them
  * with the JS Window DOM.
- * 
+ *
  * This function does not need to be edited.
  * @private
  * @author Nausher Rao
- * 
+ *
  */
 function registerTasks() {
     logger.info("Loading tasks!");
@@ -165,14 +176,14 @@ function registerTasks() {
 }
 
 /**
- * 
- * Code registered directly with the web socket to execute code 
- * when a slash command ("interaction") is recorded. 
- * 
+ *
+ * Code registered directly with the web socket to execute code
+ * when a slash command ("interaction") is recorded.
+ *
  * This function does not need to be edited.
  * @private
  * @author Nausher Rao
- * 
+ *
  */
 function handleCommands() {
     logger.info("Registering commands with the interaction create web socket!");
@@ -186,16 +197,15 @@ function handleCommands() {
 
             } else
                 continue;
-
         }
     });
 }
 
 /**
- * 
+ *
  * Allows any other file that has access to index to use other files.
  * @author Nausher Rao
- * 
+ *
  */
 module.exports = { discord: discord, logger: logger };
 
