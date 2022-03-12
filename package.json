@@ -14,7 +14,7 @@
     },
     "name": "sherbot",
     "description": "<h1 align=\"center\">SherBot</h1>\r <blockquote align=\"center\">\r   <em>SherBot</em> A lightweight skeleton for a Discord bot that can be used to create any bot! It has all the boilerplate code done for you, and is fully modular! You can add commands, events, and timed tasks - all fully modular!\r </blockquote>",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "main": "src/index.js",
     "repository": {
         "type": "git",
