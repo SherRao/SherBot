@@ -5,6 +5,9 @@ const defaultOptions = {
     eventsDirectory: "events",
     embedsDirectory: "embeds",
     tasksDirectory: "tasks",
+
+    loggerFormatter: (messages, context) =>
+        messages.unshift(`[${new Date().toUTCString()}] [${context.level.name}]: `)
 };
 
 class SherBotClient {
@@ -19,6 +22,11 @@ class SherBotClient {
     constructor(clientOptions = {}, options = defaultOptions) {
         this.client = new Client(clientOptions);
         this.options = options;
+        this.logger = require("js-logger");
+        this.logger.useDefaults({
+            defaultLevel: this.logger.DEBUG,
+            formatter: options.loggerFormatter
+        });
 
         Object.defineProperty(this, "token", { writable: true });
         if (!browser && !this.token && "DISCORD_TOKEN" in process.env) {
@@ -44,7 +52,6 @@ class SherBotClient {
      */
     async login(token = this.token) {
         this.client.once("ready", () => {
-            initLogger();
             setPresence();
             registerCommands();
             registerEvents();
@@ -57,29 +64,124 @@ class SherBotClient {
         return this.client.login(token);
     }
 
-    #initLogger() {
-        console.log("initLogger");
-    }
-
+    /**
+     * Sets the initial Discord bot user presence text. 
+     * 
+     * @private
+     * 
+     */
     #setPresence() {
-        console.log("setPresence");
+        logger.info("Setting presence!");
+        discord.user.setPresence({
+            status: "dnd",
+            activity: {
+                name: "Loading bot...",
+                type: "WATCHING",
+                url: null
+            },
+
+            type: "WATCHING"
+        });
     }
 
+    /**
+     * Load all command files from the "commands" folder, and POST them to the Discord 
+     * command endpoint for the specific server.
+     * 
+     * @private
+     * 
+     */
     #registerCommands() {
-        console.log("registerCommands");
+        logger.info("Loading commands!");
+        let files = fs.readdirSync(`./${this.options.commandsDirectory}`)
+            .filter(file => file.endsWith(".js") && file != "example.command.js");
+
+        for (const file of files) {
+            const command = require(`./${this.options.commandsDirectory}/${file}`);
+            if (!command.enabled)
+                continue;
+
+            commands.push(command);
+            discord.api.applications(discord.user.id).guilds(config.server).commands.post(command);
+            logger.info(`Loaded command from file: commands/${file}`);
+        }
     }
 
+    /**
+     * Load all event handler files from the "events" folder, and registers them 
+     * with the Discord event manager.
+     * 
+     * @private
+     * 
+     */
     #registerEvents() {
-        console.log("registerEvents");
+        logger.info("Loading event handlers!");
+        let files = fs.readdirSync(`./${this.options.eventsDirectory}`)
+            .filter(file => file.endsWith(".js") && file != "example.event.js");
+
+        for (const file of files) {
+            const event = require(`./${this.options.eventsDirectory}/${file}`);
+            if (!event.enabled)
+                continue;
+
+            events.push(event);
+            if (event.once)
+                discord.once(event.name, (...args) => event.execute(...args));
+
+            else
+                discord.on(event.name, (...args) => event.execute(...args));
+            logger.info(`Loaded event handler from file: events/${file}`);
+        }
     }
 
+    /**
+     * Load all repeating task files from the "tasks" folder, and registers them 
+     * with the JS Window DOM.
+     * 
+     * @private
+     * 
+     */
     #registerTasks() {
-        console.log("registerTasks");
+        logger.info("Loading tasks!");
+        let files = fs.readdirSync(`./${this.options.tasksDirectory}`)
+            .filter(file => file.endsWith(".js") && file != "example.task.js");
+
+        for (const file of files) {
+            const task = require(`./${this.options.tasksDirectory}/${file}`);
+            if (!task.enabled)
+                continue;
+
+            tasks.push(task);
+            setInterval(task.execute, task.interval);
+            logger.info(`Loaded task from file: tasks/${file}`);
+        }
     }
 
+    /**
+     * 
+     * Code registered directly with the web socket to execute code 
+     * when a slash command ("interaction") is recorded. 
+     * 
+     * @private
+     * 
+     */
     #handleCommands() {
-        console.log("handleCommands");
+        logger.info("Registering commands with the interaction create web socket!");
+        discord.ws.on("INTERACTION_CREATE", async interaction => {
+            const input = interaction.data.name.toLowerCase();
+            for (const command of commands) {
+                if (command.data.name == input) {
+                    logger.debug("Processing command: " + command.data.name);
+                    command.execute(interaction);
+                    break;
+
+                } else
+                    continue;
+
+            }
+        });
     }
+
 }
 
 module.exports = SherBotClient;
