@@ -4,10 +4,32 @@
         "js-logger": "^1.6.1"
     },
     "devDependencies": {
-        "eslint": "^7.28.0"
+        "@babel/core": "^7.17.5",
+        "@babel/eslint-parser": "^7.17.0",
+        "eslint": "^7.32.0"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "cd src && node index.js"
-    }
+    },
+    "name": "sherbot",
+    "description": "<h1 align=\"center\">SherBot</h1>\r <blockquote align=\"center\">\r   <em>SherBot</em> A lightweight skeleton for a Discord bot that can be used to create any bot! It has all the boilerplate code done for you, and is fully modular! You can add commands, events, and timed tasks - all fully modular!\r </blockquote>",
+    "version": "1.0.2",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SherRao/SherBot.git"
+    },
+    "keywords": [
+        "Discord",
+        "Bot",
+        "Discord",
+        "Bot"
+    ],
+    "author": "Nausher Rao",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/SherRao/SherBot/issues"
+    },
+    "homepage": "https://github.com/SherRao/SherBot#readme"
 }
