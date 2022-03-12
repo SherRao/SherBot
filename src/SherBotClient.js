@@ -57,17 +57,29 @@ class SherBotClient {
         return this.client.login(token);
     }
 
-    #initLogger() { }
+    #initLogger() {
+        console.log("initLogger");
+    }
 
-    #setPresence() { }
+    #setPresence() {
+        console.log("setPresence");
+    }
 
-    #registerCommands() { }
+    #registerCommands() {
+        console.log("registerCommands");
+    }
 
-    #registerEvents() { }
+    #registerEvents() {
+        console.log("registerEvents");
+    }
 
-    #registerTasks() { }
+    #registerTasks() {
+        console.log("registerTasks");
+    }
 
-    #handleCommands() { }
+    #handleCommands() {
+        console.log("handleCommands");
+    }
 }
 
 module.exports = SherBotClient;
