@@ -17,4 +17,4 @@ async function execute() {
 
 }
 
-module.exports = { execute: execute, interval: 1000 * 60 };
+module.exports = { execute: execute, interval: 1000 * 60, enabled: true };
